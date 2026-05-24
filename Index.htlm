@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Perscrutarium Vitae — N'gedoua</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+--bg:#f5f2ec;--bg2:#edeae2;--ink:#1c1a16;--ink2:#4a4640;--ink3:#9a948a;
+--accent:#2b4a3a;--gold:#b8933e;--border:rgba(0,0,0,0.1);
+--serif:'Palatino Linotype',Palatino,Georgia,serif;
+--mono:'Courier New',monospace;--ease:cubic-bezier(.4,0,.2,1)}
+body.dark{--bg:#131210;--bg2:#1a1816;--ink:#e8e2d6;--ink2:#a09890;--ink3:#5a5450;--border:rgba(255,255,255,0.08)}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--serif);font-size:18px;line-height:1.75;transition:background .3s,color .3s;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+button{cursor:pointer;font-family:inherit}
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-thumb{background:var(--ink3)}
+#topbar{position:fixed;top:0;left:0;right:0;z-index:90;display:flex;align-items:center;justify-content:space-between;padding:16px 28px;border-bottom:1px solid var(--border);background:var(--bg);transition:background .3s}
+#topbar .logo{font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:var(--ink2)}
+#topbar .bar-right{display:flex;align-items:center;gap:20px}
+.theme-btn{font-family:var(--mono);font-size:11px;color:var(--ink3);background:none;border:none;letter-spacing:.06em}
+#menu-btn{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink);background:none;border:none}
+#menu-overlay{position:fixed;inset:0;z-index:200;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;opacity:0;transition:opacity .4s var(--ease)}
+#menu-overlay.open{opacity:1;pointer-events:all}
+#menu-close{position:absolute;top:20px;right:28px;font-family:var(--mono);font-size:11px;color:var(--ink3);background:none;border:none}
+#menu-nav{display:flex;flex-direction:column;align-items:center;gap:6px}
+#menu-nav a{font-family:var(--serif);font-size:clamp(2rem,5vw,3.4rem);font-style:italic;color:var(--ink3);line-height:1.2;transition:color .2s,transform .2s}
+#menu-nav a:hover{color:var(--ink)}
+#menu-nav a:nth-child(1){transform:translateX(-140px)}
+#menu-nav a:nth-child(2){transform:translateX(-70px)}
+#menu-nav a:nth-child(3){transform:translateX(0px)}
+#menu-nav a:nth-child(4){transform:translateX(70px)}
+#menu-nav a:nth-child(5){transform:translateX(140px)}
+#menu-nav a:nth-child(6){transform:translateX(210px)}
+#menu-nav a:nth-child(7){transform:translateX(280px)}
+#menu-nav a:nth-child(1):hover{transform:translateX(-140px)!important}
+#menu-nav a:nth-child(2):hover{transform:translateX(-70px)!important}
+#menu-nav a:nth-child(3):hover{transform:translateX(0px)!important}
+#menu-nav a:nth-child(4):hover{transform:translateX(70px)!important}
+#menu-nav a:nth-child(5):hover{transform:translateX(140px)!important}
+#menu-nav a:nth-child(6):hover{transform:translateX(210px)!important}
+#menu-nav a:nth-child(7):hover{transform:translateX(280px)!important}
+.menu-tagline{margin-top:56px;font-family:var(--mono);font-size:10px;letter-spacing:.16em;color:var(--ink3);text-align:center}
+#menu-overlay.open #menu-nav a{animation:menuIn .5s var(--ease) both}
+#menu-overlay.open #menu-nav a:nth-child(1){animation-delay:.05s}
+#menu-overlay.open #menu-nav a:nth-child(2){animation-delay:.10s}
+#menu-overlay.open #menu-nav a:nth-child(3){animation-delay:.15s}
+#menu-overlay.open #menu-nav a:nth-child(4){animation-delay:.20s}
+#menu-overlay.open #menu-nav a:nth-child(5){animation-delay:.25s}
+#menu-overlay.open #menu-nav a:nth-child(6){animation-delay:.30s}
+#menu-overlay.open #menu-nav a:nth-child(7){animation-delay:.35s}
+@keyframes menuIn{from{opacity:0;transform:translateY(16px)}to{opacity:1}}
+#main{margin-top:57px}
+.page{display:none;animation:fadeUp .4s var(--ease)}
+.page.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.section-wrap{max-width:1100px;margin:0 auto;padding:0 40px 80px}
+.number-strip{font-family:var(--mono);font-size:10px;color:var(--ink3);letter-spacing:.06em;padding:10px 40px;border-bottom:1px solid var(--border);overflow:hidden;white-space:nowrap;user-select:none}
+.obs-label{font-family:var(--mono);font-size:10px;letter-spacing:.16em;color:var(--ink3);text-transform:uppercase;padding:32px 40px 0;max-width:1100px;margin:0 auto}
+.fig-label{font-family:var(--mono);font-size:10px;letter-spacing:.12em;color:var(--ink3);margin-bottom:40px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+h2.page-title{font-size:clamp(2rem,4vw,2.8rem);font-weight:400;margin-bottom:6px}
+.page-footer{font-family:var(--mono);font-size:10px;color:var(--ink3);letter-spacing:.1em;padding:20px 40px;border-top:1px solid var(--border);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+#home .hero-title{font-size:clamp(2.8rem,6vw,5rem);font-weight:400;line-height:1.05;letter-spacing:-.02em;margin-bottom:14px}
+#home .hero-title em{font-style:italic;color:var(--accent)}
+#home .hero-sub{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--ink3);margin-bottom:44px}
+#home .home-body{max-width:660px}
+#home .home-body p{font-size:17px;line-height:1.85;color:var(--ink2);margin-bottom:22px}
+#home .home-body p strong{color:var(--ink);font-weight:500}
+#home .home-body .ref{font-family:var(--mono);font-size:10px;color:var(--ink3);letter-spacing:.1em}
+hr.divider{border:none;border-top:1px solid var(--border);margin:36px 0}
+.method-label{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);margin-bottom:20px}
+.modules{border-top:1px solid var(--border)}
+.module-row{display:grid;grid-template-columns:110px 1fr;gap:20px;padding:13px 0;border-bottom:1px solid var(--border)}
+.module-num{font-family:var(--mono);font-size:10px;color:var(--ink3);letter-spacing:.1em;padding-top:3px}
+.module-name{font-size:16px;color:var(--ink)}
+.module-name small{font-family:var(--mono);font-size:10px;color:var(--ink3);display:block;margin-top:2px}
+#home .status-line{font-family:var(--mono);font-size:10px;color:var(--ink3);letter-spacing:.1em;margin-top:28px}
+.about-placeholder{padding:44px;background:var(--bg2);border:1px dashed var(--border);font-family:var(--mono);font-size:12px;color:var(--ink3);letter-spacing:.07em;line-height:1.9;text-align:center;margin-bottom:40px}
+.claude-note{border-left:2px solid var(--accent);padding:24px 28px;background:var(--bg2)}
+.claude-note-label{font-family:var(--mono);font-size:10px;letter-spacing:.12em;color:var(--ink3);text-transform:uppercase;margin-bottom:10px}
+.claude-note p{font-size:15px;color:var(--ink2);line-height:1.8}
+#literature .proj-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));border:1px solid var(--border);background:var(--border);gap:1px;margin-bottom:32px}
+.proj-card{background:var(--bg);padding:28px 26px 22px;cursor:pointer;transition:background .2s}
+.proj-card:hover{background:var(--bg2)}
+.proj-card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px}
+.proj-icon{font-size:22px}
+.proj-status{font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;padding:3px 8px;border:1px solid var(--border);color:var(--ink3)}
+.proj-status.done{border-color:var(--accent);color:var(--accent)}
+.proj-card h3{font-size:16px;font-weight:500;line-height:1.4;margin-bottom:10px}
+.proj-card p{font-size:13px;color:var(--ink3);line-height:1.65;margin-bottom:18px}
+.proj-card-meta{font-family:var(--mono);font-size:10px;color:var(--ink3);letter-spacing:.06em}
+.deliverables{display:flex;flex-wrap:wrap;gap:5px;margin-top:12px}
+.del-chip{font-family:var(--mono);font-size:9px;letter-spacing:.08em;padding:3px 8px;border:1px solid var(--border);color:var(--ink3);background:var(--bg2);cursor:pointer;transition:all .15s}
+.del-chip:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
+#del-view{display:none}
+#del-view.open{display:block;animation:fadeUp .3s var(--ease)}
+.back-link{font-family:var(--mono);font-size:11px;color:var(--ink3);background:none;border:none;display:flex;align-items:center;gap:8px;margin-bottom:32px;letter-spacing:.08em;transition:color .2s}
+.del-header{margin-bottom:36px;padding-bottom:20px;border-bottom:1px solid var(--border)}
+.del-header h3{font-size:1.7rem;font-weight:400;margin-bottom:6px}
+.del-meta{font-family:var(--mono);font-size:10px;color:var(--ink3);letter-spacing:.1em}
+.del-content{max-width:680px;font-size:16px;line-height:1.9;color:var(--ink2)}
+.del-placeholder{font-family:var(--mono);font-size:12px;color:var(--ink3);padding:40px;background:var(--bg2);border:1px dashed var(--border);letter-spacing:.06em;line-height:1.8}
+.lit-footnote{font-family:var(--mono);font-size:10px;color:var(--ink3);letter-spacing:.08em;line-height:1.9;margin-top:24px}
+#atelier .atelier-intro{max-width:580px;font-size:16px;color:var(--ink2);line-height:1.85;margin-bottom:44px}
+.atelier-list{display:flex;flex-direction:column;gap:28px}
+.atelier-card{border:1px solid var(--border);overflow:hidden}
+.atelier-card-head{padding:18px 22px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:flex-start;gap:20px}
+.atelier-card-title{font-size:15px;font-weight:500;margin-bottom:4px}
+.atelier-card-desc{font-size:13px;color:var(--ink3);line-height:1.6;max-width:500px}
+.atelier-card-lang{font-family:var(--mono);font-size:10px;color:var(--ink3);letter-spacing:.08em;flex-shrink:0;text-align:right}
+.code-wrap{background:#191714;padding:22px 26px;overflow-x:auto}
+.code-wrap pre{font-family:var(--mono);font-size:12.5px;line-height:1.7;color:#c4bfb2}
+.kw{color:#8fba78}.str{color:var(--gold)}.cm{color:#524e48;font-style:italic}.nu{color:#d4906a}
+.atelier-card-foot{padding:11px 22px;border-top:1px solid #231f1a;background:#141210;display:flex;justify-content:space-between}
+.gh-link{font-family:var(--mono);font-size:10px;color:#524e48;letter-spacing:.08em;transition:color .2s}
+a.gh-link:hover{color:var(--gold)}
+.atelier-placeholder{border:1px dashed var(--border);padding:44px;text-align:center;font-family:var(--mono);font-size:12px;color:var(--ink3);letter-spacing:.07em;line-height:1.9}
+#ethos .ethos-intro{max-width:580px;font-size:16px;color:var(--ink2);line-height:1.85;margin-bottom:36px}
+.ethos-filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:28px}
+.eth-filter{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:5px 12px;border:1px solid var(--border);background:none;color:var(--ink3);transition:all .2s}
+.eth-filter:hover,.eth-filter.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.ethos-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1px;background:var(--border);border:1px solid var(--border)}
+.ethos-card{background:var(--bg);padding:26px;cursor:pointer;transition:background .2s}
+.ethos-card:hover{background:var(--bg2)}
+.ethos-type{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:9px}
+.ethos-card h3{font-size:16px;font-weight:500;line-height:1.3;margin-bottom:4px}
+.ethos-author{font-family:var(--mono);font-size:11px;color:var(--ink3);margin-bottom:13px;font-style:italic}
+.ethos-card p{font-size:13.5px;color:var(--ink2);line-height:1.7}
+.ethos-placeholder{grid-column:1/-1;padding:48px;background:var(--bg);font-family:var(--mono);font-size:12px;color:var(--ink3);letter-spacing:.07em;line-height:1.9;text-align:center}
+#curiosity .cur-intro{max-width:560px;font-size:16px;color:var(--ink2);line-height:1.85;margin-bottom:44px}
+.note-item{display:grid;grid-template-columns:120px 1fr;gap:24px;padding:22px 0;border-top:1px solid var(--border)}
+.note-item:last-child{border-bottom:1px solid var(--border)}
+.note-date{font-family:var(--mono);font-size:10px;color:var(--ink3);letter-spacing:.1em;padding-top:3px}
+.note-title{font-size:15px;font-weight:500;margin-bottom:7px}
+.note-body{font-size:14px;color:var(--ink2);line-height:1.7}
+.note-tag{font-family:var(--mono);font-size:9px;color:var(--ink3);letter-spacing:.12em;text-transform:uppercase;margin-top:9px}
+.cur-placeholder{border:1px dashed var(--border);padding:48px;text-align:center;font-family:var(--mono);font-size:12px;color:var(--ink3);letter-spacing:.07em;line-height:1.9}
+#ego .ego-cols{display:grid;grid-template-columns:1fr 1fr;gap:48px 60px;margin-bottom:52px}
+.ego-block-label{font-family:var(--mono);font-size:10px;letter-spacing:.12em;color:var(--ink3);margin-bottom:10px}
+.ego-block-text{font-size:16px;line-height:1.8;color:var(--ink2)}
+.ego-tag{font-family:var(--mono);font-size:10px;color:var(--ink3);letter-spacing:.1em;margin-top:8px}
+.journey-label{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);margin-bottom:24px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+.timeline{position:relative;padding-left:28px;margin-bottom:52px}
+.timeline::before{content:'';position:absolute;left:0;top:10px;bottom:10px;width:1px;background:var(--border)}
+.tl-item{position:relative;margin-bottom:32px}
+.tl-item::before{content:'';position:absolute;left:-32px;top:9px;width:8px;height:8px;border-radius:50%;background:var(--bg);border:1px solid var(--ink3)}
+.tl-item.current::before{background:var(--accent);border-color:var(--accent)}
+.tl-date{font-family:var(--mono);font-size:10px;color:var(--ink3);letter-spacing:.1em;margin-bottom:5px}
+.tl-item h3{font-size:16px;font-weight:500;margin-bottom:6px}
+.tl-item p{font-size:14px;color:var(--ink2);line-height:1.7;max-width:500px}
+.tl-target{font-family:var(--mono);font-size:10px;color:var(--accent);margin-top:7px;letter-spacing:.06em}
+.memo-label{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);margin-bottom:24px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+.memo-item{display:grid;grid-template-columns:80px 1fr;gap:20px;padding:18px 0;border-top:1px solid var(--border)}
+.memo-item:last-child{border-bottom:1px solid var(--border)}
+.memo-date{font-family:var(--mono);font-size:10px;color:var(--gold);letter-spacing:.06em;padding-top:2px}
+.memo-text{font-size:14px;color:var(--ink2);line-height:1.75}
+.memo-ref{font-family:var(--mono);font-size:10px;color:var(--ink3);margin-top:5px;font-style:italic}
+#admin-btn{position:fixed;bottom:22px;right:22px;z-index:180;width:38px;height:38px;background:var(--ink);color:var(--bg);border:none;font-size:15px;display:flex;align-items:center;justify-content:center}
+.overlay{display:none;position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.45);align-items:center;justify-content:center}
+.overlay.open{display:flex}
+.modal{background:var(--bg);border:1px solid var(--border);padding:36px;max-width:480px;width:92%;max-height:84vh;overflow-y:auto}
+.modal h3{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;margin-bottom:22px}
+.modal-close{float:right;font-family:var(--mono);font-size:11px;color:var(--ink3);background:none;border:none}
+.field-label{font-family:var(--mono);font-size:10px;letter-spacing:.08em;color:var(--ink3);display:block;margin-bottom:5px;margin-top:14px}
+.field{width:100%;font-family:var(--mono);font-size:12.5px;padding:9px 11px;background:var(--bg2);border:1px solid var(--border);color:var(--ink);outline:none}
+.field:focus{border-color:var(--ink3)}
+textarea.field{resize:vertical;min-height:90px;line-height:1.6}
+.mbtn{font-family:var(--mono);font-size:11px;letter-spacing:.08em;padding:8px 18px;border:1px solid var(--border);background:none;color:var(--ink);margin-top:16px;margin-right:6px;transition:all .2s}
+.mbtn:hover{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.mbtn.danger{color:#b33;border-color:#b33}
+.mbtn.danger:hover{background:#b33;color:#fff}
+.admin-actions{display:flex;flex-direction:column;gap:6px}
+.admin-action{font-family:var(--mono);font-size:12px;letter-spacing:.08em;padding:11px 14px;border:1px solid var(--border);background:none;color:var(--ink);text-align:left;transition:background .15s}
+.admin-action:hover{background:var(--bg2)}
+@media(max-width:700px){#ego .ego-cols{grid-template-columns:1fr}}
+@media(max-width:600px){
+.section-wrap{padding:0 18px 60px}
+.obs-label,.number-strip{padding-left:18px;padding-right:18px}
+.page-footer{padding:16px 18px}
+.module-row{grid-template-columns:1fr;gap:4px}
+.note-item{grid-template-columns:1fr;gap:6px}
+.memo-item{grid-template-columns:1fr;gap:6px}
+#menu-nav a{font-size:1.8rem}
+#menu-nav a:nth-child(1){transform:translateX(-60px)}
+#menu-nav a:nth-child(2){transform:translateX(-30px)}
+#menu-nav a:nth-child(3){transform:translateX(0)}
+#menu-nav a:nth-child(4){transform:translateX(30px)}
+#menu-nav a:nth-child(5){transform:translateX(60px)}
+#menu-nav a:nth-child(6){transform:translateX(90px)}
+#menu-nav a:nth-child(7){transform:translateX(120px)}}
+</style>
+</head>
+<body>
+  <div id="topbar">
+  <a class="logo" href="#" onclick="nav('home');return false;">🔬 N'gedoua Perscrutarium Vitae</a>
+  <div class="bar-right">
+    <button class="theme-btn" onclick="toggleTheme()">◐ Light</button>
+    <button id="menu-btn" onclick="openMenu()">Menu</button>
+  </div>
+</div>
+
+<div id="menu-overlay">
+  <button id="menu-close" onclick="closeMenu()">✕ close</button>
+  <div style="font-family:var(--mono);font-size:10px;letter-spacing:.16em;color:var(--ink3);margin-bottom:48px;text-align:center;">Perscrutarium Vitae</div>
+  <nav id="menu-nav">
+    <a href="#" onclick="nav('home');return false;">Home</a>
+    <a href="#" onclick="nav('about');return false;">About</a>
+    <a href="#" onclick="nav('literature');return false;">Literature Pipeline</a>
+    <a href="#" onclick="nav('atelier');return false;">Atelier</a>
+    <a href="#" onclick="nav('ethos');return false;">Ethos</a>
+    <a href="#" onclick="nav('curiosity');return false;">Curiosity</a>
+    <a href="#" onclick="nav('ego');return false;">Ego</a>
+  </nav>
+  <div class="menu-tagline">N'gedoua · Perscrutarium Vitae · 2026 · Côte d'Ivoire · Bac D · in fieri</div>
+</div>
+
+<div id="main">
+
+<section id="home" class="page active">
+  <div class="number-strip" id="ns-home"></div>
+  <div class="obs-label">Observation I — Subject Identity</div>
+  <div class="section-wrap">
+    <div class="fig-label">Fig. 1.0 — Analyst Portrait · Origin: Côte d'Ivoire · 2026</div>
+    <h1 class="hero-title">Scrutinizing<br>the <em>living.</em></h1>
+    <div class="hero-sub">Perscrutarium Vitae · in fieri · per aspera</div>
+    <div class="home-body">
+      <p>Je m'appelle <strong>N'gedoua</strong>. Ce répertoire a été fondé durant mes études secondaires en Côte d'Ivoire comme un espace de rigueur et d'exploration intellectuelle indépendante. Je suis guidé par une seule conviction : la biologie n'est pas une simple discipline — c'est une manière de lire le monde. Ce portfolio documente cette lecture. Inachevée. Toujours en cours.</p>
+      <p class="ref">cf. Renovatio Intra · 2026</p>
+      <p><em>Perscrutarium Vitae</em> — littéralement, « l'examen de la vie » — est un pipeline indépendant d'analyse de la littérature scientifique et de biologie synthétique. Chaque entrée documente la dissection systématique d'articles scientifiques publiés, en suivant strictement une méthodologie rigoureuse en 5 modules.</p>
+      <hr class="divider">
+      <div class="method-label">PV-001 — Methodology — 5-Module Protocol</div>
+      <div class="modules">
+        <div class="module-row"><div class="module-num">Module 1 →</div><div class="module-name">Memorandum &amp; Foundations <small>Contexte &amp; bases</small></div></div>
+        <div class="module-row"><div class="module-num">Module 2 →</div><div class="module-name">High-Level Video Summary <small>Synthèse vidéo</small></div></div>
+        <div class="module-row"><div class="module-num">Module 3 →</div><div class="module-name">Methods &amp; Results Audit <small>Audit des méthodes &amp; résultats</small></div></div>
+        <div class="module-row"><div class="module-num">Module 4 →</div><div class="module-name">Critical Discussion &amp; Engineering Limitations <small>Discussion critique</small></div></div>
+        <div class="module-row"><div class="module-num">Module 5 →</div><div class="module-name">Final Consolidated Synthesis Report <small>Rapport final en anglais — university dossier</small></div></div>
+      </div>
+      <div class="status-line" style="margin-top:28px;">Status: active · 1 cycle completed</div>
+    </div>
+  </div>
+  <div class="page-footer"><span>N'gedoua · Perscrutarium Vitae · 2026</span><span>Côte d'Ivoire · Bac D · in fieri</span></div>
+</section>
+
+<section id="about" class="page">
+  <div class="number-strip" id="ns-about"></div>
+  <div class="obs-label">Observation II — The Analyst</div>
+  <div class="section-wrap">
+    <h2 class="page-title">About</h2>
+    <div class="fig-label">Fig. 2.0 — Identity · Trajectory · Ambition</div>
+    <div class="about-placeholder">— À rédiger —<br><br>Ton parcours. D'où tu viens.<br>Pourquoi tu as construit ce portfolio.<br>Tes ambitions — McGill, biologie de synthèse, ce que tu construis.</div>
+    <div class="claude-note">
+      <div class="claude-note-label">Note méthodologique — Sur le rôle de Claude</div>
+      <p>Ce portfolio a été conçu et développé en collaboration avec Claude (Anthropic), utilisé comme interlocuteur méthodologique et consultant multidisciplinaire. Claude n'a jamais généré d'idées de recherche ni produit de contenus scientifiques à la place de l'auteur. Toute la propriété intellectuelle appartient entièrement à N'gedoua. Claude a servi de cadre rigoureux : poser des questions, challenger les raisonnements, structurer les méthodes. Un outil, pas un auteur.</p>
+    </div>
+  </div>
+  <div class="page-footer"><span>N'gedoua · Perscrutarium Vitae · 2026</span><span>Côte d'Ivoire · Bac D · in fieri</span></div>
+</section>
+
+<section id="literature" class="page">
+  <div class="number-strip" id="ns-lit"></div>
+  <div class="obs-label">Observation III — Research Pipeline</div>
+  <div class="section-wrap">
+    <div id="lit-index-view">
+      <h2 class="page-title">Literature Pipeline</h2>
+      <div class="fig-label">Fig. 3.0 — <span id="proj-count">1 completed</span> · ongoing</div>
+      <div class="proj-grid" id="proj-grid">
+        <div class="proj-card">
+          <div class="proj-card-top"><span class="proj-icon">🤖</span><span class="proj-status done">Completed</span></div>
+          <h3>Kinematic Self-Replication in Reconfigurable Organisms</h3>
+          <p>How can reconfigurable organisms — xenobots — replicate through kinematics rather than classical biology? An exploration at the intersection of synthetic biology and living robotics.</p>
+          <div class="proj-card-meta">PV-001 · Apr. 2026</div>
+          <div style="font-family:var(--mono);font-size:10px;color:var(--ink3);margin-top:10px;">↓ View deliverables</div>
+          <div class="deliverables">
+            <span class="del-chip" onclick="openDel('Memorandum · Xenobots','PV-001 · Completed · Apr. 2026')">Memorandum</span>
+            <span class="del-chip" onclick="openDel('Video Summary · Xenobots','PV-001 · Completed · Apr. 2026')">Video Summary</span>
+            <span class="del-chip" onclick="openDel('M&amp;R Audit · Xenobots','PV-001 · Completed · Apr. 2026')">M&amp;R Audit</span>
+            <span class="del-chip" onclick="openDel('Critical Discussion · Xenobots','PV-001 · Completed · Apr. 2026')">Discussion</span>
+            <span class="del-chip" onclick="openDel('Final Report · Xenobots','PV-001 · Completed · Apr. 2026')">Final Report</span>
+          </div>
+        </div>
+      </div>
+      <div class="lit-footnote">* each project = minimum 5 modules · final report written in English — university dossier<br>→ pipeline: synthetic biology · living systems · bioinformatics</div>
+    </div>
+    <div id="del-view">
+      <button class="back-link" onclick="closeDel()">← Back to Pipeline</button>
+      <div class="del-header"><h3 id="del-title">—</h3><div class="del-meta" id="del-meta">—</div></div>
+      <div class="del-content"><div class="del-placeholder" id="del-body">— Content to be added —<br><br>Edit on GitHub to populate this deliverable.</div></div>
+    </div>
+  </div>
+  <div class="page-footer"><span>N'gedoua · Perscrutarium Vitae · 2026</span><span>Côte d'Ivoire · Bac D · in fieri</span></div>
+</section>
+
+<section id="atelier" class="page">
+  <div class="number-strip" id="ns-at"></div>
+  <div class="obs-label">Observation IV — Computational Work</div>
+  <div class="section-wrap">
+    <h2 class="page-title">Atelier</h2>
+    <div class="fig-label">Fig. 4.0 — Simulations · Models · Systems built</div>
+    <p class="atelier-intro">Travaux computationnels concrets — simulations biologiques, modèles mathématiques, scripts construits dans le cadre de l'exploration du vivant. Chaque entrée documente ce qui a été produit, pas seulement ce qui a été lu.</p>
+    <div class="atelier-list" id="atelier-list"></div>
+    <div class="atelier-placeholder" id="atelier-placeholder">— Atelier en construction —<br><br>Le premier système à documenter ici est en cours de développement.<br>Chaque entrée = une simulation construite, un modèle testé.</div>
+  </div>
+  <div class="page-footer"><span>N'gedoua · Perscrutarium Vitae · 2026</span><span>Côte d'Ivoire · Bac D · in fieri</span></div>
+</section>
+
+<section id="ethos" class="page">
+  <div class="number-strip" id="ns-eth"></div>
+  <div class="obs-label">Observation V — Intellectual Formation</div>
+  <div class="section-wrap">
+    <h2 class="page-title">Ethos</h2>
+    <div class="fig-label">Fig. 5.0 — Influences · Ethics · Foundations of scientific logic</div>
+    <p class="ethos-intro">Les fondations de ma logique scientifique, ma culture académique et ma moralité face aux technologies du vivant. Ce qui a façonné ma manière de penser — livres, moments historiques, dilemmes éthiques, conférences.</p>
+    <div class="ethos-filters">
+      <button class="eth-filter on" onclick="filterEthos('all',this)">All</button>
+      <button class="eth-filter" onclick="filterEthos('book',this)">Books</button>
+      <button class="eth-filter" onclick="filterEthos('event',this)">Historical Moments</button>
+      <button class="eth-filter" onclick="filterEthos('ethics',this)">Ethical Dilemmas</button>
+      <button class="eth-filter" onclick="filterEthos('talk',this)">Talks &amp; Docs</button>
+    </div>
+    <div class="ethos-grid" id="ethos-grid">
+      <div class="ethos-placeholder">— Premières entrées à documenter —<br><br>Thomas Kuhn · Conférence d'Asilomar · Gene drives · et d'autres.</div>
+    </div>
+  </div>
+  <div class="page-footer"><span>N'gedoua · Perscrutarium Vitae · 2026</span><span>Côte d'Ivoire · Bac D · in fieri</span></div>
+</section>
+
+<section id="curiosity" class="page">
+  <div class="number-strip" id="ns-cur"></div>
+  <div class="obs-label">Observation VI — Open Questions</div>
+  <div class="section-wrap">
+    <h2 class="page-title">Curiosity</h2>
+    <div class="fig-label">Fig. 6.0 — Raw notes · Open hypotheses · Intuitions</div>
+    <p class="cur-intro">Un espace de notes brutes. Questions ouvertes, observations intuitives face au vivant, hypothèses personnelles et pistes pour les développer. Non filtré. Toujours en cours.</p>
+    <div class="notes-feed" id="notes-feed"></div>
+    <div class="cur-placeholder" id="cur-placeholder">— Premières notes à venir —<br><br>Une question. Une intuition. Une piste.<br>C'est ici que ça commence.</div>
+  </div>
+  <div class="page-footer"><span>N'gedoua · Perscrutarium Vitae · 2026</span><span>Côte d'Ivoire · Bac D · in fieri</span></div>
+</section>
+
+<section id="ego" class="page">
+  <div class="number-strip" id="ns-ego"></div>
+  <div class="obs-label">Observation VII — Progression</div>
+  <div class="section-wrap">
+    <h2 class="page-title">Ego</h2>
+    <div class="fig-label">Fig. 7.0 — Vision · Roadmap · Journey</div>
+    <div class="ego-cols">
+      <div>
+        <div class="ego-block-label">Vision · in vitro</div>
+        <div class="ego-block-text">La biologie me fascine parce qu'elle pose les questions que toutes les autres disciplines évitent : qu'est-ce que la vie ? Où commence-t-elle, où finit-elle ? Je veux contribuer à une science qui sert l'humanité.</div>
+        <div class="ego-tag">Obs. I</div>
+      </div>
+      <div>
+        <div class="ego-block-label">Roadmap · in vivo</div>
+        <div class="ego-block-text">Bac D en candidat libre · biologie de synthèse à l'international → McGill → recherche ou droit de la santé. Deux chemins, un idéal.</div>
+        <div class="ego-tag">Proj.</div>
+      </div>
+    </div>
+    <div class="journey-label">Academic Journey —</div>
+    <div class="timeline">
+      <div class="tl-item current">
+        <div class="tl-date">2026 · Seconde</div>
+        <h3>Current</h3>
+        <p>Préparation du Bac D en candidat libre. Reconstruction des fondations en mathématiques, physique-chimie et SVT. Le travail commence ici.</p>
+        <div class="tl-target">→ target: 15+ in coefficient-4 subjects</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">—</div>
+        <h3>Earlier entries to be written…</h3>
+      </div>
+    </div>
+    <div class="memo-label">Memo —</div>
+    <div class="memo-feed" id="memo-feed">
+      <div class="memo-item"><div class="memo-date">Apr.<br>2026</div><div><div class="memo-text">Premier cycle PV complété. Les xenobots m'ont appris quelque chose d'inattendu : la frontière entre le vivant et la machine est plus poreuse qu'on ne le croit.</div><div class="memo-ref">→ cf. Kriegman et al., 2021</div></div></div>
+      <div class="memo-item"><div class="memo-date">Mar.<br>2026</div><div><div class="memo-text">Lancement du Perscrutarium Vitae. Documenter ce qu'on apprend est déjà une forme de rigueur scientifique.</div><div class="memo-ref">→ ibid. protocole PV-001</div></div></div>
+    </div>
+  </div>
+  <div class="page-footer"><span>N'gedoua · Perscrutarium Vitae · 2026</span><span>Côte d'Ivoire · Bac D · in fieri</span></div>
+</section>
+
+</div>
+
+<button id="admin-btn" onclick="document.getElementById('admin-overlay').classList.add('open')">✏️</button>
+
+<div class="overlay" id="admin-overlay">
+  <div class="modal">
+    <button class="modal-close" onclick="document.getElementById('admin-overlay').classList.remove('open');showSection(null)">✕ close</button>
+    <div id="adm-login">
+      <h3>Admin Access</h3>
+      <input type="password" class="field" id="adm-pw" placeholder="password" onkeydown="if(event.key==='Enter')checkPw()">
+      <br><button class="mbtn" onclick="checkPw()">Enter →</button>
+      <button class="mbtn" onclick="document.getElementById('admin-overlay').classList.remove('open')">Cancel</button>
+    </div>
+    <div id="adm-panel" style="display:none">
+      <h3>Admin</h3>
+      <div class="admin-actions">
+        <button class="admin-action" onclick="showSection('s-project')">✦ Add a Project</button>
+        <button class="admin-action" onclick="showSection('s-memo')">✦ Add a Memo</button>
+        <button class="admin-action" onclick="showSection('s-curiosity')">✦ Add a Curiosity Note</button>
+        <button class="admin-action" onclick="showSection('s-ethos')">✦ Add an Ethos Entry</button>
+        <button class="admin-action" onclick="showSection('s-atelier')">✦ Add an Atelier Entry</button>
+        <button class="admin-action" onclick="exportHTML()">⬇ Export site as HTML</button>
+        <button class="mbtn danger" style="margin-top:8px;" onclick="if(confirm('Clear all data?')){localStorage.clear();location.reload()}">Clear all data</button>
+      </div>
+      <div id="s-project" style="display:none"><h3>Add a Project</h3>
+        <span class="field-label">Title</span><input class="field" id="p-title" placeholder="Project title">
+        <span class="field-label">Icon</span><input class="field" id="p-icon" placeholder="🧬">
+        <span class="field-label">Description</span><textarea class="field" id="p-desc"></textarea>
+        <span class="field-label">Status</span><select class="field" id="p-status"><option value="completed">Completed</option><option value="in-progress">In Progress</option><option value="upcoming">Upcoming</option></select>
+        <button class="mbtn" onclick="addProject()">Create →</button><button class="mbtn" onclick="showSection(null)">Back</button>
+      </div>
+      <div id="s-memo" style="display:none"><h3>Add a Memo</h3>
+        <span class="field-label">Date</span><input class="field" id="m-date" placeholder="Apr. 2026">
+        <span class="field-label">Content</span><textarea class="field" id="m-content"></textarea>
+        <span class="field-label">Reference (optional)</span><input class="field" id="m-ref" placeholder="→ cf. ...">
+        <button class="mbtn" onclick="addMemo()">Add →</button><button class="mbtn" onclick="showSection(null)">Back</button>
+      </div>
+      <div id="s-curiosity" style="display:none"><h3>Add a Curiosity Note</h3>
+        <span class="field-label">Date</span><input class="field" id="c-date" placeholder="May 2026">
+        <span class="field-label">Title</span><input class="field" id="c-title" placeholder="Question...">
+        <span class="field-label">Note</span><textarea class="field" id="c-body"></textarea>
+        <span class="field-label">Tag</span><input class="field" id="c-tag" placeholder="évolution / synthèse ...">
+        <button class="mbtn" onclick="addCuriosity()">Add →</button><button class="mbtn" onclick="showSection(null)">Back</button>
+      </div>
+      <div id="s-ethos" style="display:none"><h3>Add an Ethos Entry</h3>
+        <span class="field-label">Title</span><input class="field" id="e-title" placeholder="The Structure of Scientific Revolutions">
+        <span class="field-label">Author / Source</span><input class="field" id="e-author" placeholder="Thomas Kuhn, 1962">
+        <span class="field-label">Type</span><select class="field" id="e-type"><option value="book">Book</option><option value="event">Historical Moment</option><option value="ethics">Ethical Dilemma</option><option value="talk">Talk / Documentary</option></select>
+        <span class="field-label">How it shaped your thinking</span><textarea class="field" id="e-content" style="min-height:120px"></textarea>
+        <button class="mbtn" onclick="addEthos()">Add →</button><button class="mbtn" onclick="showSection(null)">Back</button>
+      </div>
+      <div id="s-atelier" style="display:none"><h3>Add an Atelier Entry</h3>
+        <span class="field-label">Title</span><input class="field" id="a-title" placeholder="DNA Transcription Simulation">
+        <span class="field-label">Description</span><textarea class="field" id="a-desc"></textarea>
+        <span class="field-label">Language / Tool</span><input class="field" id="a-lang" placeholder="Python · Biopython">
+        <span class="field-label">Code</span><textarea class="field" id="a-code" style="min-height:160px;font-size:12px;"></textarea>
+        <span class="field-label">GitHub link (optional)</span><input class="field" id="a-gh" placeholder="https://github.com/...">
+        <button class="mbtn" onclick="addAtelier()">Add →</button><button class="mbtn" onclick="showSection(null)">Back</button>
+      </div>
+    </div>
+  </div>
+</div>
+  <script>
+let D={pw:'pv2026',projects:[],memos:[],curiosity:[],ethos:[],atelier:[]};
+function load(){try{const s=localStorage.getItem('pv');if(s){const p=JSON.parse(s);D={...D,...p};}}catch(e){}renderAll();}
+function save(){localStorage.setItem('pv',JSON.stringify(D));}
+function renderAll(){renderMemos();renderCuriosity();renderEthos('all');renderAtelier();renderProjects();}
+
+function makeStrip(id,start,end){const el=document.getElementById(id);if(!el)return;let s='';for(let i=start;i<=end;i++)s+=String(i).padStart(3,'0');el.textContent=s;}
+makeStrip('ns-home',1,12);makeStrip('ns-about',13,21);makeStrip('ns-lit',22,29);
+makeStrip('ns-at',30,42);makeStrip('ns-eth',43,52);makeStrip('ns-cur',53,63);makeStrip('ns-ego',64,76);
+
+function nav(id){closeMenu();document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0);if(id==='literature')closeDel();}
+function toggleTheme(){document.body.classList.toggle('dark');document.querySelector('.theme-btn').textContent=document.body.classList.contains('dark')?'◐ Dark':'◐ Light';}
+function openMenu(){document.getElementById('menu-overlay').classList.add('open');document.body.style.overflow='hidden';}
+function closeMenu(){document.getElementById('menu-overlay').classList.remove('open');document.body.style.overflow='';}
+document.getElementById('menu-overlay').addEventListener('click',function(e){if(e.target===this)closeMenu();});
+
+function openDel(title,meta){document.getElementById('lit-index-view').style.display='none';document.getElementById('del-view').classList.add('open');document.getElementById('del-title').textContent=title;document.getElementById('del-meta').textContent=meta;document.getElementById('del-body').innerHTML='— Content to be added —<br><br>Edit on GitHub to populate this deliverable.';window.scrollTo(0,0);}
+function closeDel(){document.getElementById('lit-index-view').style.display='';document.getElementById('del-view').classList.remove('open');}
+
+function renderProjects(){const grid=document.getElementById('proj-grid');grid.querySelectorAll('.dyn-card').forEach(el=>el.remove());D.projects.forEach(p=>{const card=document.createElement('div');card.className='proj-card dyn-card';const sc=p.status==='completed'?'done':'';card.innerHTML=`<div class="proj-card-top"><span class="proj-icon">${p.icon||'🧬'}</span><span class="proj-status ${sc}">${p.status}</span></div><h3>${p.title}</h3><p>${p.desc}</p><div class="proj-card-meta">${p.meta||''}</div>`;grid.appendChild(card);});}
+
+function addProject(){const t=document.getElementById('p-title').value.trim();if(!t)return;D.projects.push({title:t,icon:document.getElementById('p-icon').value.trim()||'🧬',desc:document.getElementById('p-desc').value.trim(),status:document.getElementById('p-status').value,meta:new Date().toLocaleDateString('en',{month:'short',year:'numeric'})});save();renderProjects();closeAdmin();}
+
+function addMemo(){const c=document.getElementById('m-content').value.trim();if(!c)return;D.memos.unshift({date:document.getElementById('m-date').value.trim(),content:c,ref:document.getElementById('m-ref').value.trim()});save();renderMemos();closeAdmin();}
+function renderMemos(){const feed=document.getElementById('memo-feed');feed.querySelectorAll('.dyn-memo').forEach(el=>el.remove());D.memos.forEach(m=>{const div=document.createElement('div');div.className='memo-item dyn-memo';div.innerHTML=`<div class="memo-date">${m.date}</div><div><div class="memo-text">${m.content}</div>${m.ref?`<div class="memo-ref">${m.ref}</div>`:''}</div>`;feed.insertBefore(div,feed.firstChild);});}
+
+function addCuriosity(){const t=document.getElementById('c-title').value.trim();if(!t)return;D.curiosity.unshift({date:document.getElementById('c-date').value.trim(),title:t,body:document.getElementById('c-body').value.trim(),tag:document.getElementById('c-tag').value.trim()});save();renderCuriosity();closeAdmin();}
+function renderCuriosity(){const feed=document.getElementById('notes-feed');feed.innerHTML='';D.curiosity.forEach(n=>{const div=document.createElement('div');div.className='note-item';div.innerHTML=`<div class="note-date">${n.date}</div><div><div class="note-title">${n.title}</div><div class="note-body">${n.body}</div>${n.tag?`<div class="note-tag">${n.tag}</div>`:''}</div>`;feed.appendChild(div);});document.getElementById('cur-placeholder').style.display=D.curiosity.length?'none':'';}
+
+function addEthos(){const t=document.getElementById('e-title').value.trim();if(!t)return;D.ethos.push({title:t,author:document.getElementById('e-author').value.trim(),type:document.getElementById('e-type').value,content:document.getElementById('e-content').value.trim()});save();renderEthos('all');closeAdmin();}
+const typeLabels={book:'Book',event:'Historical Moment',ethics:'Ethical Dilemma',talk:'Talk / Documentary'};
+function renderEthos(filter){const grid=document.getElementById('ethos-grid');grid.innerHTML='';const items=filter==='all'?D.ethos:D.ethos.filter(e=>e.type===filter);if(!items.length){grid.innerHTML='<div class="ethos-placeholder">— Premières entrées à documenter —<br><br>Thomas Kuhn · Conférence d\'Asilomar · Gene drives · et d\'autres.</div>';return;}items.forEach(e=>{const card=document.createElement('div');card.className='ethos-card';card.innerHTML=`<div class="ethos-type">${typeLabels[e.type]||e.type}</div><h3>${e.title}</h3><div class="ethos-author">${e.author}</div><p>${e.content}</p>`;grid.appendChild(card);});}
+function filterEthos(f,btn){document.querySelectorAll('.eth-filter').forEach(b=>b.classList.remove('on'));btn.classList.add('on');renderEthos(f);}
+
+function addAtelier(){const t=document.getElementById('a-title').value.trim();const c=document.getElementById('a-code').value.trim();if(!t||!c)return;D.atelier.push({title:t,desc:document.getElementById('a-desc').value.trim(),lang:document.getElementById('a-lang').value.trim(),code:c,gh:document.getElementById('a-gh').value.trim()});save();renderAtelier();closeAdmin();}
+function highlight(code){return code.replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\b(def|class|import|from|return|for|in|if|else|elif|and|or|not|True|False|None|with|as|pass|while|break|continue|lambda|yield|try|except|finally|raise|global|del|assert|print)\b/g,'<span class="kw">$1</span>').replace(/(#[^\n]*)/g,'<span class="cm">$1</span>').replace(/("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')/g,'<span class="str">$1</span>').replace(/\b(\d+\.?\d*)\b/g,'<span class="nu">$1</span>');}
+function renderAtelier(){const list=document.getElementById('atelier-list');list.innerHTML='';document.getElementById('atelier-placeholder').style.display=D.atelier.length?'none':'';D.atelier.forEach(a=>{const div=document.createElement('div');div.className='atelier-card';div.innerHTML=`<div class="atelier-card-head"><div><div class="atelier-card-title">${a.title}</div><div class="atelier-card-desc">${a.desc}</div></div><div class="atelier-card-lang">${a.lang}</div></div><div class="code-wrap"><pre>${highlight(a.code)}</pre></div><div class="atelier-card-foot">${a.gh?`<a href="${a.gh}" target="_blank" class="gh-link">→ View on GitHub</a>`:'<span class="gh-link">—</span>'}<span class="gh-link">${a.lang}</span></div>`;list.appendChild(div);});}
+
+function checkPw(){if(document.getElementById('adm-pw').value===D.pw){document.getElementById('adm-login').style.display='none';document.getElementById('adm-panel').style.display='';}else{document.getElementById('adm-pw').value='';document.getElementById('adm-pw').placeholder='Wrong password';}}
+function showSection(id){['s-project','s-memo','s-curiosity','s-ethos','s-atelier'].forEach(s=>{document.getElementById(s).style.display='none';});document.querySelector('.admin-actions').style.display=id?'none':'flex';if(id)document.getElementById(id).style.display='';}
+function closeAdmin(){document.getElementById('admin-overlay').classList.remove('open');document.getElementById('adm-login').style.display='';document.getElementById('adm-panel').style.display='none';document.getElementById('adm-pw').value='';showSection(null);}
+function exportHTML(){const blob=new Blob([document.documentElement.outerHTML],{type:'text/html'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='index.html';a.click();}
+
+load();
+</script>
+</body>
+</html>
